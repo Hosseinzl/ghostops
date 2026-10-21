@@ -1,0 +1,46 @@
+[
+    {
+        "name": "Database Connection Failure",
+        "pattern": "Failed to connect to database(:\\s*timeout after \\d+ms)?",
+        "severity_levels": [
+            "ERROR",
+            "FATAL"
+        ]
+    },
+    {
+        "name": "Rate Limit Warning",
+        "pattern": "Rate limit approaching( for client IP [\\d\\.]+)?",
+        "severity_levels": [
+            "WARN"
+        ]
+    },
+    {
+        "name": "Null Pointer Exception",
+        "pattern": "NullPointerException.*",
+        "severity_levels": [
+            "ERROR"
+        ]
+    },
+    {
+        "name": "Payment Gateway Issue",
+        "pattern": "Payment gateway (timeout|returned \\d{3}).*",
+        "severity_levels": [
+            "ERROR",
+            "FATAL"
+        ]
+    },
+    {
+        "name": "Database Pool Exhaustion",
+        "pattern": "Database connection pool exhausted.*",
+        "severity_levels": [
+            "FATAL"
+        ]
+    },
+    {
+        "name": "SQL Syntax Error",
+        "pattern": "SQL syntax error.*",
+        "severity_levels": [
+            "ERROR"
+        ]
+    }
+]
