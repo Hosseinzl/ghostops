@@ -49,8 +49,8 @@ func run() error {
 	return runner.Run()
 }
 
-func initReporters(outputPath string) []reporter.Reporter {
-	reporters := []reporter.Reporter{
+func initReporters(outputPath string) []Reporter {
+	reporters := []Reporter{
 		reporter.NewTerminalReporter(os.Stdout),
 	}
 	if outputPath != "" {

@@ -4,24 +4,27 @@ import (
 	"fmt"
 	"ghostops/analyzer"
 	"ghostops/incident"
-	"ghostops/reporter"
 )
 
 type Streamer interface {
 	EachLine(fn func(line string) error) error
 }
 
+type Reporter interface {
+	WriteReport(analysisOverall *analyzer.AnalysisManager, incidents []*incident.Incident) error
+}
+
 type Runner struct {
 	streamer        Streamer
 	analyzeTool     *analyzer.AnalysisManager
 	incidentManager *incident.IncidentManager
-	reporters       []reporter.Reporter
+	reporters       []Reporter
 }
 
 func NewRunner(streamer Streamer,
 	analyzeTool *analyzer.AnalysisManager,
 	incidentManager *incident.IncidentManager,
-	reporters []reporter.Reporter) *Runner {
+	reporters []Reporter) *Runner {
 
 	return &Runner{
 		streamer:        streamer,
