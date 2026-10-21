@@ -35,11 +35,11 @@ func (r *Runner) Run() error {
 	err := r.streamer.EachLine(func(line string) error {
 		logEntry, err := analyzer.VerifyLogEntry(line)
 		if err != nil {
-			r.analyzeTool.AnalyzeLogEntry(logEntry)
+			r.analyzeTool.RecordMalformed()
 			return nil
 		}
 
-		r.analyzeTool.AnalyzeLogEntry(logEntry)
+		r.analyzeTool.RecordValid(logEntry)
 
 		r.incidentManager.ProcessLogEntry(logEntry)
 
@@ -58,7 +58,7 @@ func (r *Runner) Run() error {
 
 func (r *Runner) GenerateReport() error {
 	for _, reporter := range r.reporters {
-		err := reporter.WriteReport(r.analyzeTool, r.incidentManager.IncidentsList(true))
+		err := reporter.WriteReport(r.analyzeTool, r.incidentManager.IncidentsList())
 		if err != nil {
 			return fmt.Errorf("error in generate report: %w", err)
 		}

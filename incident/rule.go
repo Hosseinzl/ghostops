@@ -16,10 +16,6 @@ type IncidentRule struct {
 
 func ReadIncidentRulesFromFile(filePath string) ([]IncidentRule, error) {
 
-	if filePath == "" {
-		filePath = "incident/incident_rules.json"
-	}
-
 	rules, err := jsonutil.LoadFromJSONFile[[]IncidentRule](filePath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to load incident rules from file: %w", err)

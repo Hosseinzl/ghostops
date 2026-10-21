@@ -15,7 +15,7 @@ func NewFlagConfig() (*FlagConfig, error) {
 
 	logPath := flag.String("p", "", "Path to the input log file")
 	outputPath := flag.String("o", "", "Path to the output JSON file")
-	incidentRulesPath := flag.String("r", "", "Path to the incident rules file")
+	incidentRulesPath := flag.String("r", "incident/incident_rules.json", "Path to the incident rules file")
 
 	flag.Parse()
 

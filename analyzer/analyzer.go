@@ -26,10 +26,10 @@ func (ar *AnalysisManager) addInvalidEntries() {
 	ar.TotalMalformedEntries++
 }
 
-func (ar *AnalysisManager) AnalyzeLogEntry(logEntry *LogEntry) {
-	if logEntry == nil {
-		ar.addInvalidEntries()
-		return
-	}
+func (ar *AnalysisManager) RecordMalformed() {
+	ar.addInvalidEntries()
+}
+
+func (ar *AnalysisManager) RecordValid(logEntry *LogEntry) {
 	ar.addValidEntries(logEntry)
 }

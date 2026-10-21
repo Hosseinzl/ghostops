@@ -37,14 +37,14 @@ func NewIncidentManager(incidentRulesPath string) (*IncidentManager, error) {
 	}, nil
 }
 
-func (im *IncidentManager) NextIncidentID() uint32 {
+func (im *IncidentManager) nextIncidentID() uint32 {
 	im.lastIncidentID++
 	return im.lastIncidentID
 }
 
-func (im *IncidentManager) AppendIncidents(entry *analyzer.LogEntry, key string, rule IncidentRule) {
+func (im *IncidentManager) appendIncidents(entry *analyzer.LogEntry, key string, rule IncidentRule) {
 	im.incidents[key] = &Incident{
-		ID:        im.NextIncidentID(),
+		ID:        im.nextIncidentID(),
 		RuleName:  rule.Name,
 		Service:   entry.Service,
 		Severity:  []analyzer.SeverityLevel{entry.SeverityLevel},
@@ -55,7 +55,7 @@ func (im *IncidentManager) AppendIncidents(entry *analyzer.LogEntry, key string,
 
 }
 
-func (im *IncidentManager) UpdateIncident(entry *analyzer.LogEntry, key string) {
+func (im *IncidentManager) updateIncident(entry *analyzer.LogEntry, key string) {
 	im.incidents[key].Count++
 	if entry.TimeStamp.After(im.incidents[key].EndTime) {
 		im.incidents[key].EndTime = entry.TimeStamp
@@ -63,14 +63,14 @@ func (im *IncidentManager) UpdateIncident(entry *analyzer.LogEntry, key string) 
 	if entry.TimeStamp.Before(im.incidents[key].StartTime) {
 		im.incidents[key].StartTime = entry.TimeStamp
 	}
-	if !im.hasSeverity(im.incidents[key].Severity, entry.SeverityLevel) {
+	if !hasSeverity(im.incidents[key].Severity, entry.SeverityLevel) {
 		im.incidents[key].Severity = append(im.incidents[key].Severity, entry.SeverityLevel)
 	}
 }
 
 func (im *IncidentManager) ProcessLogEntry(entry *analyzer.LogEntry) {
 	for _, rule := range im.rules {
-		if !im.hasSeverity(rule.SeverityLevels, entry.SeverityLevel) {
+		if !hasSeverity(rule.SeverityLevels, entry.SeverityLevel) {
 			continue
 		}
 
@@ -81,17 +81,17 @@ func (im *IncidentManager) ProcessLogEntry(entry *analyzer.LogEntry) {
 		key := fmt.Sprintf("%s-%s", entry.Service, rule.Name)
 		if _, exists := im.incidents[key]; exists {
 			// update the existing incident
-			im.UpdateIncident(entry, key)
+			im.updateIncident(entry, key)
 		} else {
 			// create a new incident
-			im.AppendIncidents(entry, key, rule)
+			im.appendIncidents(entry, key, rule)
 		}
 
 		break
 	}
 }
 
-func (im *IncidentManager) hasSeverity(levels []analyzer.SeverityLevel, target analyzer.SeverityLevel) bool {
+func hasSeverity(levels []analyzer.SeverityLevel, target analyzer.SeverityLevel) bool {
 	for _, level := range levels {
 		if level == target {
 			return true
@@ -100,21 +100,21 @@ func (im *IncidentManager) hasSeverity(levels []analyzer.SeverityLevel, target a
 	return false
 }
 
-func (im *IncidentManager) IncidentsList(sorted bool) []*Incident {
+func (im *IncidentManager) IncidentsList() []*Incident {
 	incidents := make([]*Incident, 0, len(im.incidents))
 	for _, incident := range im.incidents {
 		incidents = append(incidents, incident)
 	}
-	if sorted {
-		sort.Slice(incidents, func(i, j int) bool {
-			if incidents[i].Count != incidents[j].Count {
-				return incidents[i].Count > incidents[j].Count
-			}
-			if !incidents[i].StartTime.Equal(incidents[j].StartTime) {
-				return incidents[i].StartTime.Before(incidents[j].StartTime)
-			}
-			return incidents[i].RuleName < incidents[j].RuleName
-		})
-	}
+
+	sort.Slice(incidents, func(i, j int) bool {
+		if incidents[i].Count != incidents[j].Count {
+			return incidents[i].Count > incidents[j].Count
+		}
+		if !incidents[i].StartTime.Equal(incidents[j].StartTime) {
+			return incidents[i].StartTime.Before(incidents[j].StartTime)
+		}
+		return incidents[i].RuleName < incidents[j].RuleName
+	})
+
 	return incidents
 }

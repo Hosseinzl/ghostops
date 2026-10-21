@@ -70,9 +70,9 @@ func verifyTimeStamp(timeStampStr string) (time.Time, error) {
 }
 
 func verifySeverityLevel(level string) (SeverityLevel, error) {
-	severityLevel := severityLevelName[level]
-	if severityLevel == 0 {
-		return 0, fmt.Errorf("severity level is invalid")
+	severityLevel, ok := severityLevelName[level]
+	if !ok {
+		return 0, fmt.Errorf("invalid severity level: %s", level)
 	}
 
 	return severityLevel, nil
