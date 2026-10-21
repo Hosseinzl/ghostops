@@ -34,10 +34,15 @@ func run() error {
 		return fmt.Errorf("failed to create log streamer: %w", err)
 	}
 
+	incidentManager, err := incident.NewIncidentManager(flagConfiguration.incidentRulesPath)
+	if err != nil {
+		return fmt.Errorf("failed to create incident manager: %w", err)
+	}
+
 	runner := NewRunner(
 		logStreamer,
 		analyzer.NewAnalysisManager(),
-		incident.NewIncidentManager(flagConfiguration.incidentRulesPath),
+		incidentManager,
 		initReporters(flagConfiguration.outputPath),
 	)
 

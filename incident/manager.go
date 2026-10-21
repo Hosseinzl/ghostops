@@ -23,18 +23,18 @@ type IncidentManager struct {
 	LastIncidentID uint32
 }
 
-func NewIncidentManager(incidentRulesPath string) *IncidentManager {
+func NewIncidentManager(incidentRulesPath string) (*IncidentManager, error) {
 
 	rules, err := ReadIncidentRulesFromFile(incidentRulesPath)
 	if err != nil {
-		panic(err)
+		return nil, fmt.Errorf("failed to initialize incident manager: %w", err)
 	}
 
 	return &IncidentManager{
 		Incidents:      make(map[string]*Incident),
 		Rules:          rules,
 		LastIncidentID: 0,
-	}
+	}, nil
 }
 
 func (im *IncidentManager) NextIncidentID() uint32 {
@@ -74,7 +74,7 @@ func (im *IncidentManager) ProcessLogEntry(entry *analyzer.LogEntry) {
 			continue
 		}
 
-		if rule.regex != nil && rule.regex.MatchString(entry.Message) {
+		if rule.regex != nil && !rule.regex.MatchString(entry.Message) {
 			continue
 		}
 
