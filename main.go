@@ -29,13 +29,13 @@ func run() error {
 	}
 	defer file.Close()
 
-	streamer, err := streamer.NewLogStreamer(file)
+	logStreamer, err := streamer.NewLogStreamer(file)
 	if err != nil {
 		return fmt.Errorf("failed to create log streamer: %w", err)
 	}
 
 	runner := NewRunner(
-		streamer,
+		logStreamer,
 		analyzer.NewAnalysisManager(),
 		incident.NewIncidentManager(flagConfiguration.incidentRulesPath),
 		initReporters(flagConfiguration.outputPath),

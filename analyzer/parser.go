@@ -112,7 +112,7 @@ func VerifyLogEntry(entry string) (*LogEntry, error) {
 		return nil, fmt.Errorf("log entry is malformed: %w", err)
 	}
 
-	message, err := verifyMessage(strings.Join(entryParts[3:], " "))
+	message, err := verifyMessage(entryParts[3])
 	if err != nil {
 		return nil, fmt.Errorf("log entry is malformed: %w", err)
 	}

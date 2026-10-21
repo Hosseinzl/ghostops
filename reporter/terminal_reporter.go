@@ -6,6 +6,7 @@ import (
 	"ghostops/incident"
 	"io"
 	"sort"
+	"strings"
 )
 
 type TerminalReporter struct {
@@ -82,8 +83,7 @@ func printTopPriorityIncidents(incidents []*incident.Incident, out io.Writer) {
 		fmt.Fprintf(out, "Incident ID: %d\n", incident.ID)
 		fmt.Fprintf(out, "Rule Name: %s\n", incident.RuleName)
 		fmt.Fprintf(out, "Service: %s\n", incident.Service)
-		fmt.Fprintf(out, "Severities: %s\n", severityStrings)
-		fmt.Fprintf(out, "Description: %s\n", incident.Description)
+		fmt.Fprintf(out, "Severities: %s\n", strings.Join(severityStrings, ", "))
 		fmt.Fprintf(out, "Count: %d\n", incident.Count)
 		fmt.Fprintf(out, "Start Time: %s\n", incident.StartTime.Format("2006-01-02 15:04:05"))
 		fmt.Fprintf(out, "End Time: %s\n", incident.EndTime.Format("2006-01-02 15:04:05"))

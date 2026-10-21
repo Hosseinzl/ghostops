@@ -22,8 +22,7 @@ func (lg *LogStreamer) EachLine(fn func(line string) error) error {
 	scanner := bufio.NewScanner(lg.reader)
 
 	maxBufferSize := 1024 * 1024 // 1 MB
-	buf := make([]byte, maxBufferSize)
-	scanner.Buffer(buf, maxBufferSize)
+	scanner.Buffer(make([]byte, 64*1024), maxBufferSize)
 
 	for scanner.Scan() {
 		line := scanner.Text()

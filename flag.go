@@ -21,12 +21,12 @@ func NewFlagConfig() (*FlagConfig, error) {
 
 	// Validate required flags.
 	if *logPath == "" {
-		return nil, fmt.Errorf("Error: -p is required")
+		return nil, fmt.Errorf("-p is required. please provide log file path")
 	}
 
 	// Validate positional arguments.
 	if flag.NArg() > 0 {
-		return nil, fmt.Errorf("Error: unexpected positional arguments")
+		return nil, fmt.Errorf("unexpected positional arguments")
 	}
 
 	return &FlagConfig{

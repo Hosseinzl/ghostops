@@ -3,20 +3,18 @@ package incident
 import (
 	"fmt"
 	"ghostops/analyzer"
-	"regexp"
 	"sort"
 	"time"
 )
 
 type Incident struct {
-	ID          uint32                   `json:"id"`
-	RuleName    string                   `json:"rule_name"`
-	Service     string                   `json:"service"`
-	Severity    []analyzer.SeverityLevel `json:"severities"`
-	Description string                   `json:"description"`
-	Count       int                      `json:"count"`
-	StartTime   time.Time                `json:"start_time"`
-	EndTime     time.Time                `json:"end_time"`
+	ID        uint32                   `json:"id"`
+	RuleName  string                   `json:"rule_name"`
+	Service   string                   `json:"service"`
+	Severity  []analyzer.SeverityLevel `json:"severities"`
+	Count     int                      `json:"count"`
+	StartTime time.Time                `json:"start_time"`
+	EndTime   time.Time                `json:"end_time"`
 }
 
 type IncidentManager struct {
@@ -76,8 +74,7 @@ func (im *IncidentManager) ProcessLogEntry(entry *analyzer.LogEntry) {
 			continue
 		}
 
-		matched, err := regexp.MatchString(rule.Pattern, entry.Message)
-		if err != nil || !matched {
+		if rule.regex != nil && rule.regex.MatchString(entry.Message) {
 			continue
 		}
 
@@ -110,7 +107,13 @@ func (im *IncidentManager) IncidentsList(sorted bool) []*Incident {
 	}
 	if sorted {
 		sort.Slice(incidents, func(i, j int) bool {
-			return incidents[i].Count > incidents[j].Count
+			if incidents[i].Count != incidents[j].Count {
+				return incidents[i].Count > incidents[j].Count
+			}
+			if !incidents[i].StartTime.Equal(incidents[j].StartTime) {
+				return incidents[i].StartTime.Before(incidents[j].StartTime)
+			}
+			return incidents[i].RuleName < incidents[j].RuleName
 		})
 	}
 	return incidents

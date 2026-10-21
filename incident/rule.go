@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"ghostops/analyzer"
 	"ghostops/jsonutil"
+	"regexp"
 )
 
 type IncidentRule struct {
-	Name           string                  `json:"name"`
-	Pattern        string                  `json:"pattern"`
+	Name           string                   `json:"name"`
+	Pattern        string                   `json:"pattern"`
 	SeverityLevels []analyzer.SeverityLevel `json:"severity_levels"`
+	regex          *regexp.Regexp
 }
 
 func ReadIncidentRulesFromFile(filePath string) ([]IncidentRule, error) {

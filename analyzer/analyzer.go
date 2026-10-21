@@ -22,13 +22,13 @@ func (ar *AnalysisManager) addValidEntries(entry *LogEntry) {
 	ar.EntriesBySeverity[entry.SeverityLevel]++
 }
 
-func (ar *AnalysisManager) addInValidEntries() {
+func (ar *AnalysisManager) addInvalidEntries() {
 	ar.TotalMalformedEntries++
 }
 
 func (ar *AnalysisManager) AnalyzeLogEntry(logEntry *LogEntry) {
 	if logEntry == nil {
-		ar.addInValidEntries()
+		ar.addInvalidEntries()
 		return
 	}
 	ar.addValidEntries(logEntry)
