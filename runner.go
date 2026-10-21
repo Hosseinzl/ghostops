@@ -60,7 +60,7 @@ func (r *Runner) GenerateReport() error {
 	for _, reporter := range r.reporters {
 		err := reporter.WriteReport(r.analyzeTool, r.incidentManager.IncidentsList(true))
 		if err != nil {
-			return fmt.Errorf("error in generate report: %w:", err)
+			return fmt.Errorf("error in generate report: %w", err)
 		}
 	}
 

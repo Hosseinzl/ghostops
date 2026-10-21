@@ -18,9 +18,9 @@ type Incident struct {
 }
 
 type IncidentManager struct {
-	Incidents      map[string]*Incident
-	Rules          []IncidentRule
-	LastIncidentID uint32
+	incidents      map[string]*Incident
+	rules          []IncidentRule
+	lastIncidentID uint32
 }
 
 func NewIncidentManager(incidentRulesPath string) (*IncidentManager, error) {
@@ -31,19 +31,19 @@ func NewIncidentManager(incidentRulesPath string) (*IncidentManager, error) {
 	}
 
 	return &IncidentManager{
-		Incidents:      make(map[string]*Incident),
-		Rules:          rules,
-		LastIncidentID: 0,
+		incidents:      make(map[string]*Incident),
+		rules:          rules,
+		lastIncidentID: 0,
 	}, nil
 }
 
 func (im *IncidentManager) NextIncidentID() uint32 {
-	im.LastIncidentID++
-	return im.LastIncidentID
+	im.lastIncidentID++
+	return im.lastIncidentID
 }
 
 func (im *IncidentManager) AppendIncidents(entry *analyzer.LogEntry, key string, rule IncidentRule) {
-	im.Incidents[key] = &Incident{
+	im.incidents[key] = &Incident{
 		ID:        im.NextIncidentID(),
 		RuleName:  rule.Name,
 		Service:   entry.Service,
@@ -56,20 +56,20 @@ func (im *IncidentManager) AppendIncidents(entry *analyzer.LogEntry, key string,
 }
 
 func (im *IncidentManager) UpdateIncident(entry *analyzer.LogEntry, key string) {
-	im.Incidents[key].Count++
-	if entry.TimeStamp.After(im.Incidents[key].EndTime) {
-		im.Incidents[key].EndTime = entry.TimeStamp
+	im.incidents[key].Count++
+	if entry.TimeStamp.After(im.incidents[key].EndTime) {
+		im.incidents[key].EndTime = entry.TimeStamp
 	}
-	if entry.TimeStamp.Before(im.Incidents[key].StartTime) {
-		im.Incidents[key].StartTime = entry.TimeStamp
+	if entry.TimeStamp.Before(im.incidents[key].StartTime) {
+		im.incidents[key].StartTime = entry.TimeStamp
 	}
-	if !im.hasSeverity(im.Incidents[key].Severity, entry.SeverityLevel) {
-		im.Incidents[key].Severity = append(im.Incidents[key].Severity, entry.SeverityLevel)
+	if !im.hasSeverity(im.incidents[key].Severity, entry.SeverityLevel) {
+		im.incidents[key].Severity = append(im.incidents[key].Severity, entry.SeverityLevel)
 	}
 }
 
 func (im *IncidentManager) ProcessLogEntry(entry *analyzer.LogEntry) {
-	for _, rule := range im.Rules {
+	for _, rule := range im.rules {
 		if !im.hasSeverity(rule.SeverityLevels, entry.SeverityLevel) {
 			continue
 		}
@@ -79,7 +79,7 @@ func (im *IncidentManager) ProcessLogEntry(entry *analyzer.LogEntry) {
 		}
 
 		key := fmt.Sprintf("%s-%s", entry.Service, rule.Name)
-		if _, exists := im.Incidents[key]; exists {
+		if _, exists := im.incidents[key]; exists {
 			// update the existing incident
 			im.UpdateIncident(entry, key)
 		} else {
@@ -101,8 +101,8 @@ func (im *IncidentManager) hasSeverity(levels []analyzer.SeverityLevel, target a
 }
 
 func (im *IncidentManager) IncidentsList(sorted bool) []*Incident {
-	incidents := make([]*Incident, 0, len(im.Incidents))
-	for _, incident := range im.Incidents {
+	incidents := make([]*Incident, 0, len(im.incidents))
+	for _, incident := range im.incidents {
 		incidents = append(incidents, incident)
 	}
 	if sorted {
