@@ -89,15 +89,15 @@ go run . -p <log-file-path> [options]
 
 ### CLI Flags & Options
 
-| Flag | Type | Required | Default | Description |
-| :--- | :--- | :--- | :--- | :--- |
-| `-p` | `string` | **Yes** | — | Path to the target input log file |
-| `-o` | `string` | No | `""` | Output path to export the report in JSON format |
-| `-r` | `string` | No | `incident/incident_rules.json` | Path to custom incident detection rules JSON file |
-| `--service` | `string` | No | `""` | Filter entries by a specific service name |
-| `--min-level` | `string` | No | `""` | Filter entries with a minimum severity (`INFO`, `WARN`, `ERROR`, `FATAL`) |
-| `--after` | `string` | No | `""` | Filter entries after timestamp (`YYYY-MM-DD` or `RFC3339`) |
-| `--before` | `string` | No | `""` | Filter entries before timestamp (`YYYY-MM-DD` or `RFC3339`) |
+| Flag | Required | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `-p` | **Yes** | — | Path to the target input log file |
+| `-o` | No | `""` | Output path to export the report in JSON format |
+| `-r` | No | `incident/incident_rules.json` | Path to custom incident detection rules JSON file |
+| `--service` |  No | `""` | Filter entries by a specific service name |
+| `--min-level` | No | `""` | Filter entries with a minimum severity (`INFO`, `WARN`, `ERROR`, `FATAL`) |
+| `--after` | No | `""` | Filter entries after timestamp (`YYYY-MM-DD` or `RFC3339`) |
+| `--before` | No | `""` | Filter entries before timestamp (`YYYY-MM-DD` or `RFC3339`) |
 
 ---
 
