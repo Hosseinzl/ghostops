@@ -69,8 +69,8 @@ func verifyTimeStamp(timeStampStr string) (time.Time, error) {
 
 }
 
-func verifySeverityLevel(level string) (SeverityLevel, error) {
-	severityLevel, ok := severityLevelName[level]
+func VerifySeverityLevel(level string) (SeverityLevel, error) {
+	severityLevel, ok := severityLevelName[strings.ToUpper(level)]
 	if !ok {
 		return 0, fmt.Errorf("invalid severity level: %s", level)
 	}
@@ -102,7 +102,7 @@ func VerifyLogEntry(entry string) (*LogEntry, error) {
 		return nil, fmt.Errorf("log entry is malformed: %w", err)
 	}
 
-	severityLevel, err := verifySeverityLevel(entryParts[1])
+	severityLevel, err := VerifySeverityLevel(entryParts[1])
 	if err != nil {
 		return nil, fmt.Errorf("log entry is malformed: %w", err)
 	}

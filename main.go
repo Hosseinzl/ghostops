@@ -44,6 +44,7 @@ func run() error {
 		analyzer.NewAnalysisManager(),
 		incidentManager,
 		initReporters(flagConfiguration.outputPath),
+		flagConfiguration,
 	)
 
 	return runner.Run()
